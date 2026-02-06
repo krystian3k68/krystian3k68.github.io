@@ -72,6 +72,53 @@
             transform: translateY(0);
         }
 
+        /* Przycisk wyciszenia */
+        .mute-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background-color: #f59e0b;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .mute-button:hover {
+            background-color: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .mute-button.disabled {
+            background-color: #6b7280;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .mute-timer {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 1001;
+            display: none;
+        }
+
+        .mute-timer.show {
+            display: block;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -214,6 +261,14 @@
     </style>
 </head>
 <body>
+    <!-- Muzyka -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.youtube.com/watch?v=fdBBM_d3jlc" type="audio/mpeg">
+    </audio>
+
+    <button class="mute-button" id="muteBtn">Wycisz (1 min) 🔇<br><small>+30 sek do czasu</small></button>
+    <div class="mute-timer" id="muteTimer">Wyciszono: 60s</div>
+
     <div class="overlay" id="overlay"></div>
     
     <div class="dino" id="dino">
@@ -252,6 +307,48 @@
             let checkInterval = null;
             let checkCounter = 0;
             let isPaused = false;
+
+            // Muzyka
+            const music = document.getElementById('bgMusic');
+            const muteBtn = document.getElementById('muteBtn');
+            const muteTimerDisplay = document.getElementById('muteTimer');
+            let isMuted = false;
+            let muteTimeLeft = 0;
+            let muteInterval = null;
+
+            // Embed YouTube jako iframe dla audio
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.allow = 'autoplay';
+            iframe.src = 'https://www.youtube.com/embed/fdBBM_d3jlc?autoplay=1&loop=1&playlist=fdBBM_d3jlc&controls=0';
+            document.body.appendChild(iframe);
+
+            muteBtn.addEventListener('click', function() {
+                if (isMuted || muteTimeLeft > 0) return;
+                
+                // Dodaj 30 sekund do czasu
+                t += 30;
+                
+                // Wycisz na minutę
+                iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
+                isMuted = true;
+                muteTimeLeft = 60;
+                muteBtn.classList.add('disabled');
+                muteTimerDisplay.classList.add('show');
+                
+                muteInterval = setInterval(function() {
+                    muteTimeLeft--;
+                    muteTimerDisplay.textContent = 'Wyciszono: ' + muteTimeLeft + 's';
+                    
+                    if (muteTimeLeft <= 0) {
+                        clearInterval(muteInterval);
+                        iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+                        isMuted = false;
+                        muteBtn.classList.remove('disabled');
+                        muteTimerDisplay.classList.remove('show');
+                    }
+                }, 1000);
+            });
 
             // Dinozaur
             let dinoPos = 0;
