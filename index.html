@@ -3,84 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Krystian to cwel</title>
+    <title>Minutnik</title>
     <style>
-        body {
-            background-color: #00ff00; /* Jadowity zielony, żeby waliło po oczach */
-            color: #ff00ff; /* Różowy, jak pedalska koszulka Krystiana */
-            font-family: "Comic Sans MS", cursive, sans-serif;
-            text-align: center;
+        * {
             margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            font-size: 60px;
-            text-transform: uppercase;
-            text-shadow: 3px 3px 5px #ffff00; /* Żółty cień, bo Krystian to tchórz */
-            animation: blink 0.8s infinite; /* Szybsze miganie, żeby wkurwiało */
-        }
-        p {
-            font-size: 24px;
-            line-height: 1.5;
-            margin: 20px;
-        }
-        ul {
-            list-style-type: none;
             padding: 0;
-            font-size: 20px;
+            box-sizing: border-box;
         }
-        li {
-            background-color: #ff00ff; /* Różowe tło dla listy, jak jego życie */
-            color: #00ff00; /* Zielony tekst, żeby było nieczytelnie */
-            margin: 10px;
-            padding: 15px;
-            border: 3px solid #ffff00; /* Żółta ramka, jak jego siki ze strachu */
-            border-radius: 10px;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        img {
-            max-width: 300px;
-            border: 5px solid #ff00ff; /* Różowa ramka na mema */
-            margin: 20px;
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 60px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
-        button {
-            background-color: #ffff00; /* Żółty button, jak jego zęby */
-            color: #ff00ff; /* Różowy tekst, bo Krystian to pedał */
-            font-size: 24px;
-            padding: 15px 30px;
-            border: 3px solid #00ff00; /* Zielona ramka */
+
+        .timer {
+            font-size: 80px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .message {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .next-button {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            background-color: #10b981;
+            border: none;
+            padding: 20px 60px;
+            border-radius: 15px;
             cursor: pointer;
-            text-transform: uppercase;
-            margin: 20px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-in;
         }
-        button:hover {
-            background-color: #ff00ff; /* Różowy na hover, żeby było gównianie */
-            transform: scale(1.1);
+
+        .next-button:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
         }
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.2; }
-            100% { opacity: 1; }
+
+        .next-button:active {
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>Krystian – pedalska legenda przegrywu</h1>
-    <p>Krystian to taki cwel, że nawet jego pies sra na niego z pogardą. Serio, gość jest tak żenujący, że jak wchodzi do pokoju, to nawet muchy spierdalają!</p>
-    
-    <h2>Top 5 powodów, dla których Krystian to żenada</h2>
-    <ul>
-        <li>Wygląda jak pedał z lumpeksu, co myśli, że czarne ciuchy robią go emo.</li>
-        <li>Jego życie to jeden wielki przegryw – nawet w grach dostaje wpierdol od botów.</li>
-        <li>Jak Krystian mówi, to brzmi, jakby ktoś pierdnął w mikrofon.</li>
-        <li>Chodzi jak rasowy frajer, co marzy o byciu alfą, ale jest tylko pedalską betą.</li>
-        <li>Nawet jego mama mówi, że woli sąsiada, bo Krystian to wstyd dla rodziny.</li>
-    </ul>
+    <div class="container">
+        <div class="timer" id="timer">5:00</div>
+        <div id="content"></div>
+    </div>
 
-    <img src="https://m.media-amazon.com/images/I/716757slDmL.jpg" alt="Płaczący Wojak z napisem 'Krystian w lustrze'">
+    <script>
+        (function() {
+            const d = [
+                atob('QWRhbWllIQ=='),
+                atob('cG9zxYJ1Y2hhag=='),
+                atob('Y2h1aiBjaSB3IGR1cMSZ')
+            ];
+            
+            let s = 0;
+            let t = 300;
+            let i = null;
+            let a = true;
 
-    <p>Krystian to taki typ, co myśli, że jest kozakiem, ale każdy wie, że to cwel nad cwele. Jakby był bardziej żałosny, to by go wystawili w muzeum frajerstwa!</p>
+            function u() {
+                const m = Math.floor(t / 60);
+                const sec = t % 60;
+                document.getElementById('timer').textContent = 
+                    m + ':' + (sec < 10 ? '0' : '') + sec;
+                
+                if (t === 0) {
+                    clearInterval(i);
+                    sh();
+                } else {
+                    t--;
+                }
+            }
 
-    <button onclick="alert('Krystian ssie pałkę!')">Kliknij, jeśli też nienawidzisz Krystiana</button>
+            function sh() {
+                document.getElementById('timer').classList.add('hidden');
+                const c = document.getElementById('content');
+                c.innerHTML = '';
+                
+                const msg = document.createElement('div');
+                msg.className = 'message';
+                msg.textContent = d[s];
+                c.appendChild(msg);
+                
+                if (s < 2) {
+                    const btn = document.createElement('button');
+                    btn.className = 'next-button';
+                    btn.textContent = 'Dalej';
+                    btn.onclick = n;
+                    c.appendChild(btn);
+                }
+            }
 
+            function n() {
+                s++;
+                t = 300;
+                document.getElementById('content').innerHTML = '';
+                document.getElementById('timer').classList.remove('hidden');
+                st();
+            }
+
+            function st() {
+                if (i) clearInterval(i);
+                i = setInterval(u, 1000);
+                u();
+            }
+
+            function r() {
+                if (!a) {
+                    s = 0;
+                    t = 300;
+                    document.getElementById('content').innerHTML = '';
+                    document.getElementById('timer').classList.remove('hidden');
+                    st();
+                }
+            }
+
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    a = false;
+                } else {
+                    r();
+                }
+            });
+
+            window.addEventListener('blur', function() {
+                a = false;
+            });
+
+            window.addEventListener('focus', function() {
+                r();
+            });
+
+            st();
+        })();
+    </script>
 </body>
 </html>
